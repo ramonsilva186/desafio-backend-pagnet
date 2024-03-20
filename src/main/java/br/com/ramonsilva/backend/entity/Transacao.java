@@ -18,14 +18,14 @@ public record Transacao(Long id,
 
 
     public Transacao withValor(BigDecimal valor) {
-        return new Transacao(this.id, this.tipo, this.data, valor, this.cpf, this.cartao, this.hora, this.donoDaLoja, this.nomeDaLoja);
+        return new Transacao(id, tipo, data, valor, cpf, cartao, hora, donoDaLoja, nomeDaLoja);
     }
 
     public Transacao withData(String data) throws ParseException {
         var dateFormat = new SimpleDateFormat("yyyyMMdd");
         var date = dateFormat.parse(data);
 
-        return new Transacao(this.id, this.tipo, new Date(date.getTime()), this.valor, this.cpf, this.cartao, this.hora, this.donoDaLoja, this.nomeDaLoja);
+        return new Transacao(id, tipo, new Date(date.getTime()), valor, cpf, cartao, hora, donoDaLoja, nomeDaLoja);
 
     }
 
@@ -33,6 +33,6 @@ public record Transacao(Long id,
         var timeFormat = new SimpleDateFormat("HHmmss");
         var time = timeFormat.parse(hora);
 
-        return new Transacao(this.id, this.tipo, this.data, this.valor, this.cpf, this.cartao, new Time(time.getTime()), this.donoDaLoja, this.nomeDaLoja);
+        return new Transacao(id, tipo, data, valor, cpf, cartao, new Time(time.getTime()), donoDaLoja, nomeDaLoja);
     }
 }
