@@ -20,7 +20,7 @@ public class TransacaoController {
     }
 
     @GetMapping
-    Iterable<Transacao> listAll() {
+    List<TransacaoReport> listAll() {
         return service.listTotaisTransacoesPorNomeDaLoja();
     }
 }

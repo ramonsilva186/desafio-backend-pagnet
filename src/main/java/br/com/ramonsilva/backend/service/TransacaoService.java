@@ -5,6 +5,9 @@ import br.com.ramonsilva.backend.entity.TransacaoReport;
 import br.com.ramonsilva.backend.repository.TransacaoRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
@@ -15,8 +18,21 @@ public class TransacaoService {
         this.repository = repository;
     }
 
-    public Iterable<Transacao> listTotaisTransacoesPorNomeDaLoja() {
-        var transacoes = repository.findAll();
-        return transacoes;
+    public List<TransacaoReport> listTotaisTransacoesPorNomeDaLoja() {
+        var transacoes = repository.findAllByOrderByNomeDaLojaAscIdDesc();
+
+        //LinkedHashMap é uma implementação de Map que mantém a ordem de inserção dos elementos diferentes de HashMap
+        var reportMap = new LinkedHashMap<String, TransacaoReport>();
+        transacoes.forEach(transacao -> {
+            String nomeDaLoja = transacao.nomeDaLoja();
+            BigDecimal valor = transacao.valor();
+
+            reportMap.compute(nomeDaLoja, (key, existingReport) -> {
+                var report = (existingReport != null) ? existingReport: new TransacaoReport(key, BigDecimal.ZERO, new ArrayList<>());
+                return report.addTotal(valor).addTransacao(transacao);
+            });
+        });
+
+        return new ArrayList<>(reportMap.values());
     }
 }
