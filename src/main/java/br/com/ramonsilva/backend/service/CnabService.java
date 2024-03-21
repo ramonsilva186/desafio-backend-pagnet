@@ -30,7 +30,7 @@ public class CnabService {
         file.transferTo(targetLocation);
         var jobParameters = new JobParametersBuilder()
                 .addJobParameter("cnab", file.getOriginalFilename(), String.class, true)
-                .addJobParameter("cnabFile", "file:" + targetLocation.toString(), String.class)
+                .addJobParameter("cnabFile", "file:" + targetLocation.toString(), String.class, false)
                 .toJobParameters();
 
         jobLauncher.run(job, jobParameters);
