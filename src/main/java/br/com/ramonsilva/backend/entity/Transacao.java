@@ -1,20 +1,23 @@
 package br.com.ramonsilva.backend.entity;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public record Transacao(Long id,
+public record Transacao(@Id Long id,
                         Integer tipo,
                         Date data,
                         BigDecimal valor,
                         Long cpf,
                         String cartao,
                         Time hora,
-                        String donoDaLoja,
-                        String nomeDaLoja) {
+                        @Column("DONO_LOJA") String donoDaLoja,
+                        @Column("NOME_LOJA") String nomeDaLoja) {
 
 
     public Transacao withValor(BigDecimal valor) {
