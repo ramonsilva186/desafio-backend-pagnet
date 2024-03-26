@@ -1,5 +1,6 @@
 package br.com.ramonsilva.backend.job;
 
+import br.com.ramonsilva.backend.entity.TipoTransacao;
 import br.com.ramonsilva.backend.entity.Transacao;
 import br.com.ramonsilva.backend.entity.TransacaoCNAB;
 import org.springframework.batch.core.Job;
@@ -80,9 +81,12 @@ public class BatchConfig {
     @Bean
     ItemProcessor<TransacaoCNAB, Transacao> processor() {
         return item -> {
+            var tipoTransacao = TipoTransacao.findByTipo(item.tipo());
+            var valorNormalizado = item.valor().divide(new BigDecimal(100)).multiply(tipoTransacao.getSinal());
+
             var transacao = new Transacao(
                     null, item.tipo(), null,
-                    item.valor().divide(BigDecimal.valueOf(100)), item.cpf(), item.cartao(),
+                    valorNormalizado, item.cpf(), item.cartao(),
                     null, item.donoDaLoja().trim(), item.nomeDaLoja().trim())
                     .withData(item.data())
                     .withHora(item.hora());

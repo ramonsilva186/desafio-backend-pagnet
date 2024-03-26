@@ -21,19 +21,18 @@ public class TransacaoService {
 
     public List<TransacaoReport> listTotaisTransacoesPorNomeDaLoja() {
         var transacoes = repository.findAllByOrderByNomeDaLojaAscIdDesc();
-
         //LinkedHashMap é uma implementação de Map que mantém a ordem de inserção dos elementos diferentes de HashMap
         var reportMap = new LinkedHashMap<String, TransacaoReport>();
-        transacoes.forEach(transacao -> {
-            String nomeDaLoja = transacao.nomeDaLoja();
-            var tipoTransacao = TipoTransacao.findByTipo(transacao.tipo());
 
-            BigDecimal valor = transacao.valor().multiply(tipoTransacao.getSinal());
+
+        transacoes.forEach(transacao -> {
+            var nomeDaLoja = transacao.nomeDaLoja();
+            var valor = transacao.valor();
 
             reportMap.compute(nomeDaLoja, (key, existingReport) -> {
                 var report = (existingReport != null) ? existingReport: new TransacaoReport(key, BigDecimal.ZERO, new ArrayList<>());
 
-                return report.addTotal(valor).addTransacao(transacao.withValor(valor));
+                return report.addTotal(valor).addTransacao(transacao);
             });
         });
 
